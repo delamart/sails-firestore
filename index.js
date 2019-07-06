@@ -134,18 +134,12 @@ module.exports = {
       return done(new Error('Consistency violation: Cannot register datastore: `' + datastoreName + '`, because it is already registered with this adapter!  This could be due to an unexpected race condition in userland code (e.g. attempting to initialize Waterline more than once), or it could be due to a bug in this adapter.  (If you get stumped, reach out at https://sailsjs.com/support.)'));
     }
 
-    // Ensure a `serviceAccount` was configured.
-    if (!datastoreConfig.serviceAccount) {
-      return done(new Error('Invalid configuration for datastore `' + datastoreName + '`:  Missing `serviceAccount` (See https://sailsjs.com/config/datastores#?the-connection-url for more info.)'));
-    }
-
     var app;
     try {
       app = admin.app('sails-firestore-'+datastoreName);
     } catch (e) {
       _.noop(e);
       app = admin.initializeApp({
-        credential: admin.credential.cert(datastoreConfig.serviceAccount)
       }, 'sails-firestore-'+datastoreName);
     }
 
